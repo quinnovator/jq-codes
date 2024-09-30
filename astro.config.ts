@@ -1,26 +1,29 @@
-import { rehypeHeadingIds } from '@astrojs/markdown-remark'
-import mdx from '@astrojs/mdx'
-import react from '@astrojs/react'
-import sitemap from '@astrojs/sitemap'
-import tailwind from '@astrojs/tailwind'
-import { transformerCopyButton } from '@rehype-pretty/transformers'
+import { rehypeHeadingIds } from '@astrojs/markdown-remark';
+import mdx from '@astrojs/mdx';
+import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
+import tailwind from '@astrojs/tailwind';
+import { transformerCopyButton } from '@rehype-pretty/transformers';
 import {
   transformerMetaHighlight,
   transformerNotationDiff,
-} from '@shikijs/transformers'
-import { defineConfig } from 'astro/config'
-import rehypeKatex from 'rehype-katex'
-import rehypePrettyCode from 'rehype-pretty-code'
-import remarkEmoji from 'remark-emoji'
-import remarkMath from 'remark-math'
-import remarkToc from 'remark-toc'
-import sectionize from '@hbsnow/rehype-sectionize'
+} from '@shikijs/transformers';
+import { defineConfig } from 'astro/config';
+import rehypeKatex from 'rehype-katex';
+import rehypePrettyCode from 'rehype-pretty-code';
+import remarkEmoji from 'remark-emoji';
+import remarkMath from 'remark-math';
+import remarkToc from 'remark-toc';
+import sectionize from '@hbsnow/rehype-sectionize';
+import aws from 'astro-sst';
 
-import icon from 'astro-icon'
+import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://astro-erudite.vercel.app',
+  site: 'https://jq.codes',
+  output: 'server',
+  adapter: aws(),
   integrations: [
     tailwind({
       applyBaseStyles: false,
@@ -35,7 +38,6 @@ export default defineConfig({
     rehypePlugins: [
       rehypeHeadingIds,
       rehypeKatex,
-      // @ts-expect-error
       sectionize,
       [
         rehypePrettyCode,
@@ -57,11 +59,7 @@ export default defineConfig({
     ],
     remarkPlugins: [remarkToc, remarkMath, remarkEmoji],
   },
-  server: {
-    port: 1234,
-    host: true,
-  },
   devToolbar: {
     enabled: false,
   },
-})
+});
