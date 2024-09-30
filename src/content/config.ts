@@ -20,7 +20,7 @@ const blog = defineCollection({
       image: image()
         .refine((img) => img.width === 1200 && img.height === 630, {
           message:
-            'The image must be exactly 1200px × 630px for Open Graph requirements.',
+            'The image must be exactly 1200px by 630px for Open Graph requirements.',
         })
         .optional(),
       tags: z.array(z.string()).optional(),
@@ -33,7 +33,6 @@ const authors = defineCollection({
   type: 'content',
   schema: z.object({
     name: z.string(),
-    pronouns: z.string().optional(),
     avatar: z.string().url(),
     bio: z.string().optional(),
     mail: z.string().email().optional(),

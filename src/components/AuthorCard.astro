@@ -11,17 +11,8 @@ type Props = {
   linkDisabled?: boolean;
 };
 const { author, linkDisabled = false } = Astro.props;
-const {
-  name,
-  avatar,
-  bio,
-  pronouns,
-  github,
-  twitter,
-  linkedin,
-  website,
-  mail,
-} = author.data;
+const { name, avatar, bio, github, twitter, linkedin, website, mail } =
+  author.data;
 
 const socialLinks: SocialLink[] = [
   website && { href: website, label: 'Website' },
@@ -56,11 +47,6 @@ const socialLinks: SocialLink[] = [
       <div>
         <div class="flex flex-wrap items-center gap-x-2">
           <h3 class="text-lg font-semibold">{name}</h3>
-          {
-            pronouns && (
-              <span class="text-sm text-muted-foreground">({pronouns})</span>
-            )
-          }
         </div>
         <p class="text-sm text-muted-foreground">{bio}</p>
       </div>
