@@ -1,4 +1,5 @@
 ---
+import { BackgroundParticles } from '@/components/BackgroundParticles';
 import BlogCard from '@/components/BlogCard.astro';
 import Container from '@/components/Container.astro';
 import Link from '@/components/Link.astro';
@@ -21,55 +22,25 @@ const blog = (await getCollection('blog'))
 ---
 
 <Layout title="Home" description={SITE.DESCRIPTION}>
+  <BackgroundParticles client:only="react" />
   <Container class="flex flex-col gap-y-6">
     <section>
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl">er·u·dite</CardTitle>
-          <CardDescription
-            >/ˈer(y)əˌdīt/ &bull; <span class="font-semibold">adjective</span
-            ></CardDescription
-          >
+          <CardTitle className="text-3xl">Hello!</CardTitle>
+          <CardDescription>
+            <p>
+              I'm a software engineer based in the NYC metro area. I love to try
+              out new technologies and build things that make a difference.
+            </p>
+            <p>Check out some of my recent writings below.</p>
+            <p>
+              Click <Link href="/tools" class="underline">here</Link> to see a collection
+              of small, free to use tools I have built.
+            </p>
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <p class="mb-2 text-sm text-muted-foreground">
-            astro-erudite is an opinionated, no-frills static blogging template
-            built with <Link
-              href="https://astro.build"
-              class="text-foreground"
-              external
-              underline>Astro</Link
-            >, <Link
-              href="https://tailwindcss.com"
-              class="text-foreground"
-              external
-              underline>Tailwind</Link
-            >, and <Link
-              href="https://ui.shadcn.com"
-              class="text-foreground"
-              external
-              underline>shadcn/ui</Link
-            >. Extraordinarily loosely based on the <Link
-              href="https://astro-micro.vercel.app/"
-              class="text-foreground"
-              external
-              underline>Astro Micro</Link
-            > theme.
-          </p>
-          <p class="text-sm text-muted-foreground">
-            To use this template, check out the <Link
-              href="https://github.com/jktrn/astro-erudite"
-              class="text-foreground"
-              underline
-              external>GitHub</Link
-            > repository. To learn more about why this template exists, read this
-            blog post: <Link
-              href="/blog/the-state-of-static-blogs"
-              class="text-foreground"
-              underline>The State of Static Blogs in 2024</Link
-            >.
-          </p>
-        </CardContent>
+        <CardContent />
       </Card>
     </section>
     <section class="flex flex-col gap-y-4">

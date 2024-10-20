@@ -1,0 +1,31 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import Container from '@/components/Container.astro';
+import Layout from '@/layouts/Layout.astro';
+---
+
+<Layout
+  title="Docker Compose to Kubernetes Resources"
+  description="Convert Docker Compose to Kubernetes Resources."
+>
+  <Container class="flex flex-col gap-y-6">
+    <Breadcrumbs
+      items={[
+        { label: 'Tools', icon: 'lucide:wrench' },
+        {
+          label: 'Docker Compose to Kubernetes Resources',
+          icon: 'lucide:braces',
+        },
+      ]}
+    />
+
+    <section>
+      <h1 class="text-3xl font-semibold">
+        Docker Compose to Kubernetes Resources
+      </h1>
+      <p class="prose prose-neutral dark:prose-invert">
+        Convert Docker Compose to Kubernetes Resources.
+      </p>
+    </section>
+  </Container>
+</Layout>

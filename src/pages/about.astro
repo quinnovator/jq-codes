@@ -17,17 +17,25 @@ const projects = await getCollection('projects');
       <div class="min-w-full">
         <h1 class="mb-4 text-3xl font-bold">Some more about me</h1>
         <p class="prose prose-neutral mb-8 dark:prose-invert">
-          I'm truly a software nerd, and have loved making things happen with
-          code from a young age. I like to design systems that are as simple as
-          possible without losing effectiveness.
+          My name is Jack. I live in the NYC area, love music, and am a chronic
+          nerd. I'm a software engineer specializing in full stack development
+          using React, Node, and Go.
+
+          <br />
+          <br />
+
+          I offer software consulting services for small to medium sized
+          businesses on a case-by-case basis. I am currently not accepting new
+          work.
         </p>
 
         <p class="prose prose-neutral mb-8 dark:prose-invert">
-          In my free time, I love to watch baseball (Go Phillies!) or spend time
-          in nature.
+          I spend most of my free time working on software projects, but when
+          I'm not doing that you can probably find me watching the Phillies, or
+          enjoying time with my fiance and our dog.
         </p>
 
-        <h2 class="mb-4 text-2xl font-semibold">My Projects</h2>
+        <h2 class="mb-4 text-2xl font-semibold">Project showcase</h2>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => <ProjectCard project={project} />)}
         </div>

@@ -1,0 +1,33 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import Container from '@/components/Container.astro';
+import ToolCard from '@/components/ToolCard.astro';
+import Layout from '@/layouts/Layout.astro';
+
+// This is a placeholder for your tools data. You should replace this with your actual tools data.
+const tools = [
+  {
+    name: 'Docker Compose to Kubernetes Resources',
+    description: 'Convert Docker Compose to Kubernetes Resources.',
+    icon: 'lucide:braces',
+    href: '/tools/docker-compose-to-kubernetes',
+  },
+];
+---
+
+<Layout title="Tools" description="A collection of useful tools">
+  <Container class="flex flex-col gap-y-6">
+    <Breadcrumbs items={[{ label: 'Tools', icon: 'lucide:wrench' }]} />
+
+    <section>
+      <h1 class="mb-4 text-3xl font-bold">Tools</h1>
+      <p class="prose prose-neutral mb-6 dark:prose-invert">
+        Here you can find some small tools I have built that make life easier.
+      </p>
+
+      <div class="grid grid-cols-1 gap-4">
+        {tools.map((tool) => <ToolCard {...tool} />)}
+      </div>
+    </section>
+  </Container>
+</Layout>

@@ -46,3 +46,13 @@ export async function parseAuthors(authors: string[]) {
 
   return await Promise.all(authors.map(parseAuthor));
 }
+
+export function getThemePreference(): 'dark' | 'theme-light' {
+  if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+    return localStorage.getItem('theme') as 'dark' | 'theme-light';
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'theme-light';
+}
