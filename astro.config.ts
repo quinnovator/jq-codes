@@ -3,19 +3,19 @@ import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
+import sectionize from '@hbsnow/rehype-sectionize';
 import { transformerCopyButton } from '@rehype-pretty/transformers';
 import {
   transformerMetaHighlight,
   transformerNotationDiff,
 } from '@shikijs/transformers';
+import aws from 'astro-sst';
 import { defineConfig } from 'astro/config';
 import rehypeKatex from 'rehype-katex';
 import rehypePrettyCode from 'rehype-pretty-code';
 import remarkEmoji from 'remark-emoji';
 import remarkMath from 'remark-math';
 import remarkToc from 'remark-toc';
-import sectionize from '@hbsnow/rehype-sectionize';
-import aws from 'astro-sst';
 
 import icon from 'astro-icon';
 

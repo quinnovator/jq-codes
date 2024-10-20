@@ -1,7 +1,9 @@
 /// <reference path="./.sst/platform/config.d.ts" />
+
 const APPLICATION_KEY = 'jq-codes-web';
 const PROD_STAGE = 'main';
 const EXTERNAL_URL = 'jq.codes';
+
 export default $config({
   app(input) {
     return {
