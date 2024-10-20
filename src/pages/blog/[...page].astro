@@ -32,14 +32,15 @@ if (!page) {
 const postsByYear = page.data.reduce(
   (acc: Record<string, CollectionEntry<'blog'>[]>, post) => {
     const year = post.data.date.getFullYear().toString();
-    (acc[year] ??= []).push(post);
+    if (!acc[year]) acc[year] = [];
+    acc[year].push(post);
     return acc;
   },
   {},
 );
 
 const years = Object.keys(postsByYear).sort(
-  (a, b) => parseInt(b) - parseInt(a),
+  (a, b) => Number.parseInt(b) - Number.parseInt(a),
 );
 ---
 

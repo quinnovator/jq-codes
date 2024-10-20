@@ -1,0 +1,72 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import Container from '@/components/Container.astro';
+import Layout from '@/layouts/Layout.astro';
+import { type CollectionEntry, getCollection } from 'astro:content';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+type Props = {
+  project: CollectionEntry<'projects'>;
+};
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+---
+
+<Layout
+  title={`${project.data.name} (Project)`}
+  description={project.data.description ||
+    `Details of ${project.data.name} project.`}
+>
+  <Container class="flex flex-col gap-y-6">
+    <Breadcrumbs
+      items={[
+        { href: '/projects', label: 'Projects', icon: 'lucide:folder' },
+        { label: project.data.name, icon: 'lucide:file-text' },
+      ]}
+    />
+
+    <article class="prose prose-neutral max-w-none dark:prose-invert">
+      <h1>{project.data.name}</h1>
+
+      {
+        project.data.image && (
+          <img
+            src={project.data.image.src}
+            alt={project.data.name}
+            class="mb-6 rounded-lg shadow-md"
+          />
+        )
+      }
+
+      <div class="mb-6">
+        <strong>Description:</strong>
+        {project.data.description}
+      </div>
+
+      {
+        project.data.tags && (
+          <div class="mb-6">
+            <strong>Technologies:</strong>
+            <ul>
+              {project.data.tags.map((tag) => (
+                <li>{tag}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      <Content />
+    </article>
+  </Container>
+</Layout>
