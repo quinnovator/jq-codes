@@ -10,7 +10,7 @@ import {
   transformerNotationDiff,
 } from '@shikijs/transformers';
 import aws from 'astro-sst';
-import { defineConfig } from 'astro/config';
+import { defineConfig, passthroughImageService } from 'astro/config';
 import rehypeKatex from 'rehype-katex';
 import rehypePrettyCode from 'rehype-pretty-code';
 import remarkEmoji from 'remark-emoji';
@@ -24,6 +24,9 @@ export default defineConfig({
   site: 'https://jq.codes',
   output: 'server',
   adapter: aws(),
+  image: {
+    service: passthroughImageService(),
+  },
   integrations: [
     tailwind({
       applyBaseStyles: false,
