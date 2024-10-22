@@ -50,6 +50,9 @@ const projects = defineCollection({
     z.object({
       name: z.string(),
       description: z.string(),
+      objective: z.string(),
+      deliverables: z.string(),
+      key_learnings: z.string(),
       tags: z.array(z.string()),
       image: image().refine((img) => img.width === 1200 && img.height === 630, {
         message:
