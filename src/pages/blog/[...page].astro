@@ -33,8 +33,8 @@ if (!page) {
   return Astro.redirect('/404');
 }
 
-const postsByYear = page.data.reduce(
-  (acc: Record<string, Blog[]>, post: Blog) => {
+const postsByYear = page.data.reduce<Record<string, Blog[]>>(
+  (acc, post: Blog) => {
     const year = post.data.date.getFullYear().toString();
     if (!acc[year]) acc[year] = [];
     acc[year].push(post);
@@ -43,7 +43,7 @@ const postsByYear = page.data.reduce(
   {},
 );
 
-const years = Object.keys(postsByYear).sort(
+const years = Object.keys(postsByYear as Record<string, Blog[]>).sort(
   (a, b) => Number.parseInt(b) - Number.parseInt(a),
 );
 ---
