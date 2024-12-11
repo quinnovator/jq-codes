@@ -8,24 +8,29 @@ import { type CollectionEntry, getCollection } from 'astro:content';
 
 export const prerender = true;
 
+type Author = CollectionEntry<'authors'>;
+type Blog = CollectionEntry<'blog'>;
+
 export async function getStaticPaths() {
   const authors = await getCollection('authors');
-  return authors.map((author) => ({
-    params: { slug: author.slug },
+
+  return authors.map((author: Author) => ({
+    params: { id: author.id },
     props: { author },
   }));
 }
 
 type Props = {
-  author: CollectionEntry<'authors'>;
+  author: Author;
 };
 
 const { author } = Astro.props;
 
 const allPosts = await getCollection('blog');
+
 const authorPosts = allPosts
-  .filter((post) => post.data.authors?.includes(author.slug))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .filter((post: Blog) => post.data.authors?.includes(author.id))
+  .sort((a: Blog, b: Blog) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <Layout
@@ -48,7 +53,7 @@ const authorPosts = allPosts
       {
         authorPosts.length > 0 ? (
           <ul class="not-prose flex flex-col gap-4">
-            {authorPosts.map((post) => (
+            {authorPosts.map((post: Blog) => (
               <li>
                 <BlogCard entry={post} />
               </li>

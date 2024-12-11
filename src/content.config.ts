@@ -1,7 +1,8 @@
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 const blog = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**\/[^_]*.mdx', base: './src/content/blog' }),
   schema: ({ image }) =>
     z.object({
       title: z
@@ -17,12 +18,7 @@ const blog = defineCollection({
           'Description should be 155 characters or less for optimal Open Graph display.',
         ),
       date: z.coerce.date(),
-      image: image()
-        .refine((img) => img.width === 1200 && img.height === 630, {
-          message:
-            'The image must be exactly 1200px by 630px for Open Graph requirements.',
-        })
-        .optional(),
+      image: image().optional(),
       tags: z.array(z.string()).optional(),
       authors: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
@@ -30,7 +26,7 @@ const blog = defineCollection({
 });
 
 const authors = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**\/[^_]*.md', base: './src/content/authors' }),
   schema: z.object({
     name: z.string(),
     avatar: z.string().url(),
@@ -45,7 +41,7 @@ const authors = defineCollection({
 });
 
 const projects = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**\/[^_]*.md', base: './src/content/projects' }),
   schema: ({ image }) =>
     z.object({
       name: z.string(),
@@ -54,10 +50,7 @@ const projects = defineCollection({
       deliverables: z.string(),
       key_learnings: z.string(),
       tags: z.array(z.string()),
-      image: image().refine((img) => img.width === 1200 && img.height === 630, {
-        message:
-          'The image must be exactly 1200px × 630px for Open Graph requirements.',
-      }),
+      image: image(),
       link: z.string(),
     }),
 });

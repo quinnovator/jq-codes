@@ -4,9 +4,11 @@ import Container from '@/components/Container.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import { SITE } from '@/consts';
 import Layout from '@/layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import { type CollectionEntry, getCollection } from 'astro:content';
 
 const projects = await getCollection('projects');
+
+type Project = CollectionEntry<'projects'>;
 ---
 
 <Layout title="About" description={SITE.DESCRIPTION}>
@@ -37,7 +39,11 @@ const projects = await getCollection('projects');
 
         <h2 class="mb-4 text-2xl font-semibold">Project showcase</h2>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => <ProjectCard project={project} />)}
+          {
+            projects.map((project: Project) => (
+              <ProjectCard project={project} />
+            ))
+          }
         </div>
       </div>
     </section>

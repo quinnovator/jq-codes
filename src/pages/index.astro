@@ -13,11 +13,13 @@ import {
 } from '@/components/ui/card';
 import { SITE } from '@/consts';
 import Layout from '@/layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import { type CollectionEntry, getCollection } from 'astro:content';
+
+type Blog = CollectionEntry<'blog'>;
 
 const blog = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .filter((post: Blog) => !post.data.draft)
+  .sort((a: Blog, b: Blog) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
 ---
 
@@ -51,7 +53,7 @@ const blog = (await getCollection('blog'))
       <h2 class="text-2xl font-bold">Latest posts</h2>
       <ul class="not-prose flex flex-col gap-y-4">
         {
-          blog.map((post) => (
+          blog.map((post: Blog) => (
             <li>
               <BlogCard entry={post} />
             </li>

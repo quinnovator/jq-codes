@@ -5,6 +5,6 @@ objective: 'To create an e-commerce store focused on converting a social media a
 deliverables: 'A Shopify store that allows users to purchase fidget toys.'
 key_learnings: 'Shopify Liquid, Graphic Design, CDN, Shopify Plugins'
 tags: ['Shopify Liquid', 'Graphic Design', 'CDN', 'Shopify Plugins']
-image: '../../../public/static/project-ftplus.png'
+image: '../../assets/project-ftplus.png'
 link: '/projects/fidget-toys-plus'
 ---

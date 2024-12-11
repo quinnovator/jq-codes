@@ -28,11 +28,10 @@ const socialLinks: SocialLink[] = [
 >
   <div class="flex flex-wrap gap-4">
     <Link
-      href={`/authors/${author.slug}`}
-      class={cn('block', linkDisabled && 'pointer-events-none')}
+      href={`/authors/${author.id}`}
+      class={cn('block', `linkDisabled` && 'pointer-events-none')}
     >
       <AvatarComponent
-        client:load
         src={avatar}
         alt={`Avatar of ${name}`}
         fallback={name[0]}

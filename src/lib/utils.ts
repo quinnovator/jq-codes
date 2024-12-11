@@ -21,7 +21,14 @@ export function readingTime(html: string) {
   return `${readingTimeMinutes} min read`;
 }
 
-export async function parseAuthors(authors: string[]) {
+export interface ParsedAuthor {
+  slug: string;
+  name: string;
+  avatar: string;
+  isRegistered: boolean;
+}
+
+export async function parseAuthors(authors: string[]): Promise<ParsedAuthor[]> {
   if (!authors || authors.length === 0) return [];
 
   const parseAuthor = async (slug: string) => {

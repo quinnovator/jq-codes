@@ -5,7 +5,7 @@ import MobileMenu from '@/components/ui/mobile-menu';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import { NAV_LINKS, SITE } from '@/consts';
 import { Image } from 'astro:assets';
-import logo from '../../public/static/logo.svg';
+import logo from '../assets/logo.svg';
 ---
 
 <header
@@ -34,8 +34,8 @@ import logo from '../../public/static/logo.svg';
             ))
           }
         </nav>
-        <MobileMenu client:load transition:persist />
-        <ModeToggle client:load transition:persist />
+        <MobileMenu transition:persist />
+        <ModeToggle transition:persist />
       </div>
     </div>
   </Container>

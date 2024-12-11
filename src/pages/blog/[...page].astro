@@ -10,15 +10,19 @@ import { type CollectionEntry, getCollection } from 'astro:content';
 
 export const prerender = true;
 
+type Blog = CollectionEntry<'blog'>;
+
 export async function getStaticPaths({
   paginate,
 }: {
   paginate: PaginateFunction;
 }) {
-  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  const allPosts = await getCollection('blog', ({ data }: Blog) => !data.draft);
 
   return paginate(
-    allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    allPosts.sort(
+      (a: Blog, b: Blog) => b.data.date.valueOf() - a.data.date.valueOf(),
+    ),
     { pageSize: SITE.POSTS_PER_PAGE },
   );
 }
@@ -30,7 +34,7 @@ if (!page) {
 }
 
 const postsByYear = page.data.reduce(
-  (acc: Record<string, CollectionEntry<'blog'>[]>, post) => {
+  (acc: Record<string, Blog[]>, post: Blog) => {
     const year = post.data.date.getFullYear().toString();
     if (!acc[year]) acc[year] = [];
     acc[year].push(post);
@@ -74,7 +78,6 @@ const years = Object.keys(postsByYear).sort(
       currentPage={page.currentPage}
       totalPages={page.lastPage}
       baseUrl="/blog/"
-      client:load
     />
   </Container>
 </Layout>
