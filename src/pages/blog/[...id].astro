@@ -1,6 +1,4 @@
 ---
-import { Image } from 'astro:assets';
-import { type CollectionEntry, getCollection, render } from 'astro:content';
 import Breadcrumbs from '@/components/Breadcrumbs.astro';
 import Container from '@/components/Container.astro';
 import Link from '@/components/Link.astro';
@@ -12,6 +10,8 @@ import { Separator } from '@/components/ui/separator';
 import Layout from '@/layouts/Layout.astro';
 import { formatDate, parseAuthors, readingTime } from '@/lib/utils';
 import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
+import { type CollectionEntry, getCollection, render } from 'astro:content';
 
 export const prerender = true;
 

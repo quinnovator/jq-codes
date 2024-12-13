@@ -1,0 +1,91 @@
+---
+title: 'Homelab: Choosing Hardware'
+description: I'm building a homelab for my personal projects. Here's how I chose the hardware.
+date: 2024-12-11
+tags: ['homelab', 'proxmox']
+image: './thumb.png'
+authors: ['jack']
+---
+
+I'm building a homelab for my personal projects. What's that, you might ask?
+
+Well, it's a collection of compute power, memory, storage, and networking hardware that I'll be able to specially configure for my needs.
+
+In layman's terms, it's a collection of different computers that work together to accomplish specific tasks.
+
+I'm also using virtualization for my homelab. This means that there will be a software layer that sits on top of the hardware on each of my machines. This software layer is called a hypervisor.
+
+I'm using Proxmox VE for my hypervisor. It's a free and open source project that provides a web interface for managing my virtual machines, scheduling workloads, configuring storage, networking, and a lot more.
+
+I chose Proxmox because it's open source, and has significant community support.
+
+### Why a hypervisor?
+
+I love to dive into new technologies as they emerge. It's definitely a passion of mine. I love to explore the potential unlocked by new technologies, and how they might be applicable to real world problems.
+
+One of the downsides of this approach is that I often times need a different type of computer or very specific configuration of hardware to run the software I'm interested in.
+
+This is where a hypervisor comes in. It allows me to run different operating systems on the same hardware, and to configure the hardware to my needs. I can even use Proxmox to move workloads between physical machines if I need to.
+
+### Choice of hardware
+
+Proxmox VE supports a wide range of hardware. One of the benefits of using a hypervisor is that the hardware layer is abstracted away from the operating system. This means that I can use a wide range of hardware and assign virtual resources from the underlying pool of devices to run my services with maximum efficiency.
+
+For my use case, I decided to use some machines I had sitting in my closet. These include an AMD based mini-PC, three Odroid H4 Ultra SBCs, an AMD Ryzen based system, and a Dell PowerEdge R630 that I picked up on eBay.
+
+I'm installing Proxmox VE in high-availability mode on each of these machines, and then will combine them into a "cluster" which will allow me to control all of the resources from a single plane, and will also allow me to take nodes offline for maintenance without affecting my services. This is critical especially when I'll be adding/removing nodes for hobby purposes.
+
+All tolled, these resources pool to about 108 CPUs and 400GB of RAM.
+
+Some important factors to consider when choosing your hardware might include:
+
+- The CPU architecture. Proxmox VE supports a wide range of CPU architectures, and your workloads will need to be built for the architecture you choose. More likely than not, you'll be choosing between ARM and x86.
+- Balance resources across your nodes. Avoid having nodes with disproportionate resources. For example, if your node has 56 CPUs, there needs to be sufficient RAM to support running that number of workloads.
+- Pay attention to the number and types of interfaces your hardware has. If you run a multi-node cluster like mine, you will likely want to have a separate interface for the `chronosync` process that's specific to Proxmox VE. This is especially important if you intend to run distributed storage.
+- Make sure your hardware has sufficient SATA/SAS interfaces for storage purposes. You may also need external RAID controllers, or an external non-RAID controller to support a large number of drives.
+
+### Storage
+
+One of the most important considerations when choosing your hardware is storage. This is especially true if your workloads will be data-intensive.
+
+I've chosed to use an open-source distributed storage soliution called [Ceph](https://ceph.com/) for my homelab. It allows me to pool storage from multiple machines into one or many software defined pools that can be used across all of my nodes.
+
+Ceph is integrated nicely with Proxmox VE, and can be managed through the Proxmox VE web interface (to a certain extent).
+
+This has tremendous benefits, including the ability to add to and remove physical drives from the pool without downtime. If I ever need to add more storage, I can do so very easily. It also comes with built-in fault tolerance in case a physical drive fails.
+
+Ceph has a few main entities:
+
+- **Monitors**: These are the central point of control for the Ceph cluster. They are responsible for storing the cluster map, which describes the layout of the pools and the drives that make them up.
+- **Managers**: These are the workers that run the Ceph cluster. They are responsible for managing the data in the pools, and for performing the necessary operations to maintain the health of the cluster.
+- **Meta Data Servers (MDS)**: These are the metadata servers that manage the metadata for the pools. They are responsible for storing the metadata for the pools, and for performing the necessary operations to maintain the health of the cluster.
+- **Object Storage Daemons (OSDs)**: These are the actual storage devices that make up the pools. They are responsible for storing the data in the pools, and for performing the necessary operations to maintain the health of the cluster.
+- **Pools**: These are the collections of storage devices that make up the Ceph cluster. They are responsible for storing the data in the pools, and for performing the necessary operations to maintain the health of the cluster.
+
+For redundancy, you will want to run at least three monitors, and at least two managers. One manager will be the active manager, and the other will be the standby manager. You'll also want to run at least two MDS daemons, but preferably three so that one is resereved for standby (two will be in operation).
+
+I plan to have two pools in Ceph, one for 'fast' storage, and one for 'slow' storage. The 'fast' pool will be comprised of SSDs, and the 'slow' pool will be comprised of HDDs. They will be used for application storage and bulk storage, respectively.
+
+When choosing your storage hardware, make sure you spread them across your nodes. This will help with fault tolerance and performance.
+
+I've chosen to use a series of four 6TB HDDs for my 'slow' pool, and a series of four 500GB NVMe SSDs for my 'fast' pool. There are also some SAS SSDs in the mix, representing another 1.5TB of fast storage.
+
+Ceph estimates that this combination amounts to about 26TB of raw storage for me to use.
+
+### Setting the components up
+
+I won't get into a detailed installation of each of these items, since the documentation for each is quite good and ever changing. But, I wanted to share some tips that helped me get started.
+
+1. First, it isn't as complicated as it may seem at first. You'll just install Proxmox to a flash disk like any other OS, then install it to your hardware. I'd suggest using a flash disk that's at least 16GB in size. Proxmox runs as a ramdisk, so it's acceptable to use flash storage. Reserve the rest of the storage for your virtual machines.
+
+2. Get Proxmox installed on each node, then configure the network interfaces. I'd suggest using a static IP address for each node, and then configuring the network interfaces to use that IP address. I also happen to use a separate VLAN on my home network to isolate the workloads from my home internet traffic.
+
+3. After you've got Proxmox installed on each node, you'll want to configure the nodes to work together as a cluster. This is done through the Proxmox web interface. Choose one node to initialize the cluster, then you'll be able to add other nodes on the same network to the newly created cluster.
+
+4. Once you've got the nodes in the cluster, you'll want to configure the storage. If you're using Ceph, you can create OSDs and pools directly from the Proxmox web interface.
+
+5. Now the basic configuation is complete. From here, you'll want to start adding your workloads, which can be in the form of VMs or lightweight LXC containers.
+
+At this point, it's time to dig into the different configuration options for your new home data center.
+
+We'll explore some of the workloads that I intend to run in my homelab in future posts.

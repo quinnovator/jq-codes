@@ -18,7 +18,7 @@ const blog = defineCollection({
           'Description should be 155 characters or less for optimal Open Graph display.',
         ),
       date: z.coerce.date(),
-      image: image().optional(),
+      image: image(),
       tags: z.array(z.string()).optional(),
       authors: z.array(z.string()).optional(),
       draft: z.boolean().optional(),

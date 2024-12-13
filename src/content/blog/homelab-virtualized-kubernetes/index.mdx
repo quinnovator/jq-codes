@@ -1,0 +1,76 @@
+---
+title: 'Homelab: Virtualized Kubernetes'
+description: Configure a virtualized Kubernetes cluster with Talos Linux on bare metal.
+date: 2024-12-11
+tags: ['homelab', 'kubernetes', 'talos']
+image: './thumb.png'
+authors: ['jack']
+---
+
+Kubernetes is a container orchestration tool that was built at Google. Its purpose is to scale containerized applications across a cluster of machines, and respond to increasing and decreasing loads automatically.
+
+While you'll find Kubernetes heavily relied upon by large and complex software applications, I thoroughly believe that it can also be a very powerful tool for individual devlopers to learn and use.
+
+If you're not familiar with containerization, I would suggest learning how to run one of your applications in a Docker container. Containerization is a major element to large, scalable systems. In a nutshell, we use containers to replicate the environment of an application across different machines. This is a great way to avoid the "it works on my machine" problem.
+
+Once you've learned how containers work, it will become more clear how a tool like Kubernetes can come into play, which assists with managing the configuration, environment, and general lifecycle of a container.
+
+One of the main reasons that it excites me in particular is that we can develop large systems with different components working together, while avoiding the complexity of managing the underlying infrastructure. It also becomes much easier to deploy, since workloads can be deployed to a cluster in the cloud with relative ease.
+
+### Kubernetes on Proxmox
+
+If you haven't already, I would suggest reading my post on [choosing hardware](/blog/homelab-choosing-hardware) for your homelab.
+
+I'll be creating a virtual cluster with seven nodes using Proxmox. What does this mean? Well, I will create seven virtual machines using my hypervisor of choice, Proxmox. These VMs will all run a specialized version of Linux called [Talos](https://talos.dev/).
+
+Talos is a Linux distribution created for Kubernetes, and allows us to declare the state of a given node with a configuration file. This is a fantastic advantage, because it makes it very simple to add nodes or change node configuration.
+
+### Preparing for Installation
+
+You'll want to take care of a few things before getting started.
+
+1. First, download the ISO for Talos Linux from their website. Follow the instructions to download the correct ISO for your hardware, paying special attention to the architecture.
+
+2. Make sure you have a place to store the ISO within Proxmox. If you're using distirbuted storage like Ceph, make sure you have a pool set up that can be used across all nodes of your Proxmox installation.
+
+3. Once you've got the ISO downloaded, you'll want to upload the ISO to the pool we identified in the previous step.
+
+### Creating the VMs
+
+1. Now, we'll want to create a new virtual machine. Make sure it's configured as a Linux guest, and attach the newly downloaded ISO to the VM. Configure it with the number of vCPUs and RAM that you want to allocate to each node. You'll want to have two types of nodes, control plane nodes and worker nodes. Control plane nodes should be allocated at least 2 vCPUs and 4GB of RAM, while worker nodes should be allocated at least 2 vCPUs and 2GB of RAM. Control plane nodes are responsible for scheduling and operation of your cluster. It's good practice to have dedicated worker nodes to avoid your cluster failing to respond to API requests.
+
+2. Once the nodes are booted, you'll be able to see a console output when viewing the machine in noVNC. Each node will boot into something called "maintenance mode," which is a state where the node is ready to be configured.
+
+3. Now, we'll want to configure the node. Configuration is largely based on your use case, so follow the Talos documentation to learn what configuration you want to apply. This step involves using the `talosctl` tool to initialize the cluster, and the configuration will be performed in the resulting `_out/` directory for the control plane and worker nodes, respectively.
+
+4. Apply the configuration using `talosctl`. You'll want to apply the configuration to the control plane node(s) first, and then the worker nodes. Nodes are specified by targeting their IP address, which can be found in the noVNC console output for each VM.
+
+5. The nodes will soft-reboot after successful configuration.
+
+6. You will have to run the `talosctl bootstrap` command on one of the control plane nodes to bootstrap the cluster. This will create the necessary resources for the cluster to function, like `etcd` and `kube-apiserver`.
+
+7. Once the cluster is bootstrapped, you will be able to get a Kubeconfig file by using `talosctl kubeconfig`. This file will be used to interact with your cluster using the Kubernetes CLI, `kubectl`.
+
+8. You can now interact with your cluster using `kubectl`.
+
+### Extra considerations
+
+After getting your cluster up and running, you'll want to consider a few things.
+
+- You might want to configure a load balancer to route traffic to your control plane nodes. This is a good idea in a high-availability setup, and can be done with a tool like [MetalLB](https://metallb.universe.tf/).
+
+- If you intend on exposing any services, I would suggest using an ingress controller like [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/). You can port-forward from your router to the ingress controller, but I would actually suggest using tunneling to expose services if possible, to protect your personal network connection from service traffic. I personally use Cloudflare's tunneling service, which is easy to configure and comes with a generous free tier.
+
+- If you have a Ceph pool configured for your cluster in Proxmox, you'll want to install a Ceph CSI driver for your cluster. This will allow you to use your Ceph pool as a persistent storage solution for your cluster. Otherwise, check out something like Longhorn or file-based storage solutions for persistence.
+
+### What can I do with this?
+
+This is a natural question. You've got a cluster, now what?
+
+Well, there are a ton of things you can do. Most common uses include running large applications like Elasticsearch, Gitlab, and more. But, at its core, Kubernetes is just a way to manage containers.
+
+If you're brand new, I would suggest trying to run a simple application in a container. Something like a Next.js site, or a simple API. That way, you can run the whole application in a single container, and practice linking that container to other resources like ingresses, secrets, persistent storage, and more.
+
+After this, you'll start to understand how Kubernetes can be used to run many containers at scale.
+
+I'll be writing more posts about my experiences with Kubernetes, and how I've been using it to run my own applications in the future.
