@@ -1,0 +1,60 @@
+---
+import { Moon, Sun } from 'lucide-react';
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  class="border-input inline-flex h-10 w-10 items-center justify-center rounded-md border bg-background hover:bg-accent hover:text-accent-foreground"
+  title="Toggle theme"
+>
+  <Sun
+    className="size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+  />
+  <Moon
+    className="absolute size-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+  />
+  <span class="sr-only">Toggle theme</span>
+</button>
+
+<script>
+  const themes = ['theme-light', 'dark'] as const;
+
+  function getSystemTheme(): (typeof themes)[number] {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'theme-light';
+  }
+
+  function getCurrentTheme(): (typeof themes)[number] {
+    const savedTheme = localStorage.getItem('theme') as (typeof themes)[number];
+    return themes.includes(savedTheme) ? savedTheme : getSystemTheme();
+  }
+
+  function setTheme(theme: (typeof themes)[number]) {
+    document.documentElement.classList.add('disable-transitions');
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('theme', theme);
+
+    window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue('opacity');
+
+    requestAnimationFrame(() => {
+      document.documentElement.classList.remove('disable-transitions');
+    });
+  }
+
+  const initialTheme = getCurrentTheme();
+  setTheme(initialTheme);
+
+  const themeToggle = document.getElementById('theme-toggle');
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      const newTheme = isDark ? 'theme-light' : 'dark';
+      setTheme(newTheme);
+    });
+  }
+</script>

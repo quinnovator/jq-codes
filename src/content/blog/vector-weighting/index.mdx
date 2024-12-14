@@ -1,8 +1,89 @@
 ---
 title: 'Vector Weighting for Personalization'
-description: A look at how vector weighting can be used for personalization.
-date: 2024-12-13
-tags: ['personalization', 'vectors']
-image: './thumb.png'
+description: A deep dive into vector-based recommendation systems and dynamic preference weighting.
+date: 2024-12-09
+tags: ['personalization', 'vectors', 'machine-learning']
 authors: ['jack']
+draft: true
 ---
+
+import { PreferenceDemo } from './preference-demo';
+import { EventTable } from './event-table';
+import { WeightedDemo } from './weighted-demo';
+import { QueryDemo } from './query-demo';
+
+# Understanding Vector-Based Recommendation Systems
+
+Modern recommendation systems often use vector embeddings to represent items and user preferences in a high-dimensional space. These systems work by converting text descriptions, user behaviors, or other features into numerical vectors that capture semantic meaning.
+
+## How Vector Embeddings Work
+
+At its core, a vector embedding is a mathematical representation of an item or preference in a multi-dimensional space. For example, an event might be represented as:
+
+```typescript
+const eventVector = [0.2, 0.8, -0.3, ...]; // typically 300-1000 dimensions
+```
+
+The position of these vectors in the high-dimensional space encodes semantic relationships - similar items will be closer together. We measure this similarity using cosine similarity:
+
+$$
+`similarity(a, b) = \frac{a \cdot b}{||a|| \cdot ||b||}`
+$$
+
+## Available Events
+
+Below is a table of events in our system, along with their descriptions. Each event has been embedded into a vector space that captures its semantic meaning:
+
+<EventTable />
+
+## Customizing Your Preferences
+
+You can adjust your preferences using the sliders below. Each preference vector represents a different aspect of interest:
+
+<PreferenceDemo />
+
+The recommendations update in real-time as you adjust the sliders. The system calculates a weighted average of your preference vectors:
+
+$$
+`query = \frac{w_{outdoor}v_{outdoor} + w_{tech}v_{tech} + w_{art}v_{art}}{||w_{outdoor}v_{outdoor} + w_{tech}v_{tech} + w_{art}v_{art}||}`
+$$
+
+Where $w_i$ represents the weight (slider value) for each preference vector $v_i$.
+
+## Dynamic Vector Weighting
+
+While equal weighting of preference vectors is straightforward, we can make our system more sophisticated by dynamically adjusting weights based on user queries. This allows for more nuanced personalization.
+
+### The Mathematics of Vector Weighting
+
+When we have multiple preference vectors, we can combine them with different weights to create a final query vector:
+
+$$
+`query = \sum_{i=1}^{n} w_i v_i`
+$$
+
+The weights $w_i$ determine how much each preference vector contributes to the final query. These weights can be:
+
+- Manually set (as in the demo above)
+- Learned from user behavior
+- Derived from natural language queries
+
+### Query-Based Weight Generation
+
+Try entering a natural language query below. Our system will analyze the query to determine appropriate weights for each preference vector:
+
+<QueryDemo />
+
+The system processes your query through a separate embedding model to determine how closely it aligns with each preference vector. The resulting weights are then used to create a weighted query vector:
+
+$$
+`w_i = \frac{similarity(query, v_i)}{\sum_{j=1}^{n} similarity(query, v_j)}`
+$$
+
+## Advanced Weighting Demonstration
+
+Experiment with different weighting schemes and see how they affect recommendations:
+
+<WeightedDemo />
+
+This demonstrates how the same preference vectors can yield different results based on their weights, allowing for dynamic personalization based on context or user intent.

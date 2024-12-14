@@ -3,26 +3,24 @@ import { glob } from 'astro/loaders';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.mdx', base: './src/content/blog' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z
-        .string()
-        .max(
-          60,
-          'Title should be 60 characters or less for optimal Open Graph display.',
-        ),
-      description: z
-        .string()
-        .max(
-          155,
-          'Description should be 155 characters or less for optimal Open Graph display.',
-        ),
-      date: z.coerce.date(),
-      image: image(),
-      tags: z.array(z.string()).optional(),
-      authors: z.array(z.string()).optional(),
-      draft: z.boolean().optional(),
-    }),
+  schema: z.object({
+    title: z
+      .string()
+      .max(
+        60,
+        'Title should be 60 characters or less for optimal Open Graph display.',
+      ),
+    description: z
+      .string()
+      .max(
+        155,
+        'Description should be 155 characters or less for optimal Open Graph display.',
+      ),
+    date: z.coerce.date(),
+    tags: z.array(z.string()).optional(),
+    authors: z.array(z.string()).optional(),
+    draft: z.boolean().optional(),
+  }),
 });
 
 const authors = defineCollection({

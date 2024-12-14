@@ -38,12 +38,7 @@ const authorPosts = allPosts
   description={author.data.bio || `Profile of ${author.data.name}.`}
 >
   <Container class="flex flex-col gap-y-6">
-    <Breadcrumbs
-      items={[
-        { href: '/authors', label: 'Authors', icon: 'lucide:users' },
-        { label: author.data.name, icon: 'lucide:user' },
-      ]}
-    />
+    <Breadcrumbs items={[{ label: author.data.name, icon: 'lucide:user' }]} />
 
     <section>
       <AuthorCard author={author} linkDisabled />

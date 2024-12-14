@@ -1,8 +1,8 @@
 ---
-import { BackgroundParticles } from '@/components/BackgroundParticles';
 import BlogCard from '@/components/BlogCard.astro';
 import Container from '@/components/Container.astro';
 import Link from '@/components/Link.astro';
+import { BackgroundParticles } from '@/components/ui/BackgroundParticles';
 import { buttonVariants } from '@/components/ui/button';
 import {
   Card,
@@ -34,16 +34,24 @@ const blog = (await getCollection('blog'))
           >
           <CardDescription>
             <p>
-              I love to try out new technologies and build things that make a
-              difference.
+              Full-stack senior software engineer with a passion for building
+              innovative web applications. Currently architecting and
+              implementing solutions for Model Training infrastructure at
+              Capital One.
             </p>
             <br />
             <p>
-              Click <Link href="/about" class="underline">here</Link> to learn more
-              about me and my projects.
+              I earned my B.S. in Computer Science from Penn State University
+              and am an alumnus of the prestigious Happy Valley LaunchBox
+              startup accelerator. My drive lies in pushing technical boundaries
+              and transforming novel ideas into reality.
             </p>
             <br />
-            <p>Check out some of my recent writings below.</p>
+            <p>
+              Below you'll find my latest technical writings and featured
+              projects that showcase my work at the intersection of web
+              development and machine learning.
+            </p>
           </CardDescription>
         </CardHeader>
         <CardContent />

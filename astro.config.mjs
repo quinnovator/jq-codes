@@ -27,6 +27,10 @@ export default defineConfig({
   image: {
     service: passthroughImageService(),
   },
+  experimental: {
+    responsiveImages: true,
+    svg: true,
+  },
   integrations: [
     tailwind({
       applyBaseStyles: false,
