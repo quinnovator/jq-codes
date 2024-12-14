@@ -66,6 +66,19 @@ export default defineConfig({
     ],
     remarkPlugins: [remarkToc, remarkMath, remarkEmoji],
   },
+  vite: {
+    ssr: {
+      external: ['@resvg/resvg-js', 'onnxruntime-node'],
+    },
+    build: {
+      rollupOptions: {
+        external: ['@resvg/resvg-js', 'onnxruntime-node'],
+      },
+    },
+    optimizeDeps: {
+      exclude: ['@resvg/resvg-js', 'onnxruntime-node'],
+    },
+  },
   devToolbar: {
     enabled: false,
   },
