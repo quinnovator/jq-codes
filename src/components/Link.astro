@@ -7,7 +7,8 @@ type Props = {
   class?: string;
   underline?: boolean;
   dataReload?: boolean;
-  [key: string]: string | boolean | undefined;
+  // biome-ignore lint/suspicious/noExplicitAny: match Astro props
+  [key: string]: any;
 };
 
 const {
