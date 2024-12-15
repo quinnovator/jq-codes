@@ -6,11 +6,8 @@ tags: ['personalization', 'vectors', 'machine-learning']
 authors: ['jack']
 ---
 
-import { PreferenceDemo } from './preference-demo';
 import { EventTable } from './event-table';
-import { WeightedDemo } from './weighted-demo';
-import { QueryDemo } from './query-demo';
-import { BasicQueryDemo } from './basic-query-demo';
+import { UnifiedSearchDemo } from './unified-search-demo';
 
 # Understanding Vector-Based Recommendation Systems
 
@@ -35,6 +32,8 @@ const embedding = await getEmbedding(event); // returns a vector of 300 dimensio
 console.log(embedding); // [0.2, 0.8, -0.3, ...]
 ```
 
+This vector representation captures the semantic nature of the event. A query that describes "outdoor family activity" should align closely with this vector if the embedding model understands the concepts.
+
 The position of these vectors in a high-dimensional space shows us semantic relationships - similar items will be closer together. We use something called cosine similarity to measure the similarity between two vectors in most cases. There are other ways to measure similarity, but cosine similarity is a good default.
 
 ```math
@@ -47,12 +46,45 @@ I'll share a basic demonstration of how vector similarity works by embedding a l
 
 <EventTable client:only="react" />
 
-The description of each event is embedded into a vector space. This is occuring within your browser behind the scenes, using `transformers.js` and `rxdb`.
+The description of each event is embedded into a vector space. This is occurring within your browser behind the scenes, using `transformers.js` and `rxdb`.
 
-## Finding Similar Events
+### Basic Search vs. Weighted Search
 
-Now that we have a list of events embedded into a vector space, we can use cosine similarity to find similar events to a given query.
+Below, you will find a sample search component that will demonstrate how we can use vector similarity to find events that are a good suggestion for us.
 
-Try searching for an event below without using the name of the event, to see how well the system can understand meaning.
+In addition to a string, you can simulate some preferences that we might store about the user in question. These preferences might be inferred from collected data, provided by the user, or obtained via various other means.
 
-<BasicQueryDemo client:only="react" />
+There are two search modes you'll find:
+
+1. Basic Search: Find events with a similar meaning to the user's query.
+2. Weighted Search: Find events with a similar meaning to the user's query, but also take into account the user's preference data.
+
+<UnifiedSearchDemo client:only="react" />
+
+### How Weighted Search Works
+
+For each of the attirbutes that we collect about the user, we embed a small description of the attribute in question into the vector space. For example, for "noisy," we embed "loud noisy bustling sound music not-family-friendly" into the vector space.
+
+When we search for events, we use cosine similarity to find events that are similar to the user's query. Then, we consider the selected preferences, and determine how close the preference is to the event.
+
+For each preference, the weighted similarity score is applied to the event's original similarity score. The final score is the sum of the original similarity score and the weighted similarity score.
+
+Here's what the math looks like:
+
+```math
+similarity(event, preference) = \frac{event \cdot preference}{\|event\|\cdot\|preference\|}
+```
+
+```math
+final\_score(event) = \text{original\_similarity}(event, query) + \sum_{i=1}^{n} w_i \cdot \text{similarity}(event, p_i)
+```
+
+Some weights are positive - for example, the default behavior is that we're looking for events that are similar to a chosen preference. So, the similarity score is added to the final score.
+
+But, some weights are negative - for example, when we choose one of the "avoid" preferences, we actually subtract the similarity score from the final score.
+
+## It's all about the data
+
+While the above example is simple, it shows how powerful this technique can be. Vector databases like Milvus are a good option for handling billions or vectors, and even filter vectors with metadata.
+
+Ultimately though, this technique will only get you as far as the embeddings you use. The better the embeddings, the better the results. That's why an extremely perfomant data pipeline is essential to high-performance recommendation systems.

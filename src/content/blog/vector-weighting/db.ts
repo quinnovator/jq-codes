@@ -1,6 +1,6 @@
-import { cosineSimilarity } from '@/content/blog/vector-weighting/vector-math';
 import { type RxCollection, type RxDatabase, createRxDatabase } from 'rxdb';
 import { getRxStorageMemory } from 'rxdb/plugins/storage-memory';
+import { cosineSimilarity } from './vector-utils';
 
 const schema = {
   title: 'event schema',

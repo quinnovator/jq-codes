@@ -16,7 +16,6 @@ const { prevPost, nextPost } = Astro.props;
       !prevPost && 'pointer-events-none opacity-50 cursor-not-allowed',
     )}
     aria-disabled={!prevPost}
-    dataReload
   >
     <div class="mr-2 flex-shrink-0">
       <Icon
@@ -39,7 +38,6 @@ const { prevPost, nextPost } = Astro.props;
       !nextPost && 'pointer-events-none opacity-50 cursor-not-allowed',
     )}
     aria-disabled={!nextPost}
-    dataReload
   >
     <div class="flex flex-col items-end overflow-hidden">
       <span class="text-right text-xs text-muted-foreground">Next Post</span>

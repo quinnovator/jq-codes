@@ -5,9 +5,10 @@ import satori from 'satori';
 interface OGImageOptions {
   title: string;
   description?: string;
+  scale?: number;
 }
 
-function OGImage({ title, description }: OGImageOptions) {
+function OGImage({ title, description, scale = 1 }: OGImageOptions) {
   return (
     <div
       style={{
@@ -18,13 +19,13 @@ function OGImage({ title, description }: OGImageOptions) {
         alignItems: 'flex-start',
         justifyContent: 'center',
         backgroundColor: 'hsl(0 0% 7%)',
-        padding: '80px',
-        gap: '32px',
+        padding: `${80 * scale}px`,
+        gap: `${32 * scale}px`,
       }}
     >
       <div
         style={{
-          fontSize: '72px',
+          fontSize: `${72 * scale}px`,
           fontWeight: 700,
           color: '#fff',
           lineHeight: 1.2,
@@ -37,7 +38,7 @@ function OGImage({ title, description }: OGImageOptions) {
       {description && (
         <div
           style={{
-            fontSize: '32px',
+            fontSize: `${32 * scale}px`,
             fontWeight: 400,
             color: 'hsl(0 0% 60%)',
             lineHeight: 1.4,
@@ -50,16 +51,16 @@ function OGImage({ title, description }: OGImageOptions) {
       <div
         style={{
           position: 'absolute',
-          bottom: '80px',
-          left: '80px',
+          bottom: `${80 * scale}px`,
+          left: `${80 * scale}px`,
           display: 'flex',
           alignItems: 'center',
-          gap: '16px',
+          gap: `${16 * scale}px`,
         }}
       >
         <div
           style={{
-            fontSize: '32px',
+            fontSize: `${32 * scale}px`,
             fontWeight: 700,
             color: '#fff',
           }}
@@ -79,11 +80,17 @@ export async function generateOGImage(
     path.join(process.cwd(), 'public/fonts/Geist-Regular.ttf'),
   );
 
+  const scale = options.scale || 1;
+
   const svg = await satori(
-    <OGImage title={options.title} description={options.description} />,
+    <OGImage
+      title={options.title}
+      description={options.description}
+      scale={scale}
+    />,
     {
-      width: 1200,
-      height: 630,
+      width: 1200 * scale,
+      height: 630 * scale,
       fonts: [
         {
           name: 'Geist',
