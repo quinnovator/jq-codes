@@ -1,9 +1,9 @@
 ---
-import { Image } from 'astro:assets';
-import type { CollectionEntry } from 'astro:content';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { formatDate, parseAuthors, readingTime } from '@/lib/utils';
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
 import Link from './Link.astro';
 
 type Props = {
@@ -21,7 +21,11 @@ const authors = await parseAuthors(entry.data.authors ?? []);
 <div
   class="not-prose rounded-xl border bg-background p-4 transition-colors duration-300 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-900"
 >
-  <Link href={`/blog/${entry.id}`} class="flex flex-col gap-4 sm:flex-row">
+  <Link
+    href={`/blog/${entry.id}`}
+    class="flex flex-col gap-4 sm:flex-row"
+    dataReload
+  >
     <div class="max-w-[200px] sm:flex-shrink-0">
       <Image
         src={`/api/og/${entry.id}.png`}

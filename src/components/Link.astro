@@ -6,10 +6,18 @@ type Props = {
   external?: boolean;
   class?: string;
   underline?: boolean;
-  [key: string]: any;
+  dataReload?: boolean;
+  [key: string]: string | boolean | undefined;
 };
 
-const { href, external, class: className, underline, ...rest } = Astro.props;
+const {
+  href,
+  external,
+  class: className,
+  underline,
+  dataReload,
+  ...rest
+} = Astro.props;
 ---
 
 <a
@@ -21,6 +29,7 @@ const { href, external, class: className, underline, ...rest } = Astro.props;
       'underline decoration-muted-foreground underline-offset-[3px] hover:decoration-foreground',
     className,
   )}
+  data-astro-reload={dataReload}
   {...rest}
 >
   <slot />

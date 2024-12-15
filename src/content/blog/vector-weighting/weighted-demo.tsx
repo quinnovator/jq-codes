@@ -61,7 +61,6 @@ export function WeightedDemo() {
   useEffect(
     function initializeEvents() {
       async function loadEvents() {
-        await seedDemoEvents();
         await updateResults(selectedScheme.weights);
       }
       loadEvents();

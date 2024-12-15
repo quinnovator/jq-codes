@@ -1,146 +1,18 @@
-import { useCallback, useEffect, useState } from 'react';
-import { queryEventsByVector } from './db';
-import { getEmbeddingForText } from './embedder';
-import { seedDemoEvents } from './seed';
-import { weightedCombination } from './vector-math';
-import { VectorPlot } from './vector-plot';
+'use client';
 
-const DEFAULT_PREFERENCES = {
-  outdoor: 'I love outdoor adventures and nature activities.',
-  tech: "I'm interested in technology conferences, hackathons, and workshops.",
-  art: 'I enjoy visiting art exhibitions, galleries, and cultural events.',
-};
+import { VectorPlot } from './vector-plot';
+import { useVectorStore } from './vector-store';
 
 export function PreferenceDemo() {
-  const [outdoor, setOutdoor] = useState(0.33);
-  const [tech, setTech] = useState(0.33);
-  const [art, setArt] = useState(0.34);
-  const [preferenceTexts, setPreferenceTexts] = useState(DEFAULT_PREFERENCES);
-  const [events, setEvents] = useState<
-    {
-      id: string;
-      name: string;
-      description: string;
-      vector: number[];
-      score: number;
-    }[]
-  >([]);
-  const [loading, setLoading] = useState(true);
-  const [themeUpdate, setThemeUpdate] = useState(0);
-
-  const updatePreferenceVectors = useCallback(async () => {
-    const vectors: Record<string, number[]> = {};
-
-    for (const [key, text] of Object.entries(preferenceTexts)) {
-      vectors[key] = await getEmbeddingForText(text);
-    }
-
-    return vectors;
-  }, [preferenceTexts]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function initializeAndFetch() {
-      setLoading(true);
-      await seedDemoEvents();
-      await updatePreferenceVectors();
-
-      if (isMounted) {
-        setLoading(false);
-      }
-    }
-
-    initializeAndFetch();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [updatePreferenceVectors]);
-
-  useEffect(() => {
-    if (loading) return;
-
-    async function fetchEvents() {
-      const vectors = await updatePreferenceVectors();
-      const weights = { outdoor, tech, art };
-      const combined = weightedCombination(weights, vectors);
-      const topEvents = await queryEventsByVector(combined, 5);
-      setEvents(topEvents);
-    }
-
-    fetchEvents();
-  }, [outdoor, tech, art, loading, updatePreferenceVectors]);
-
-  useEffect(() => {
-    function handleThemeChange() {
-      setThemeUpdate((prev) => prev + 1);
-    }
-
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (
-          mutation.type === 'attributes' &&
-          mutation.attributeName === 'class'
-        ) {
-          handleThemeChange();
-        }
-      }
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  function handleTextChange(
-    category: keyof typeof DEFAULT_PREFERENCES,
-    value: string,
-  ) {
-    setPreferenceTexts((prev) => ({
-      ...prev,
-      [category]: value,
-    }));
-  }
-
-  const handleWeightChange = useCallback(
-    (category: 'outdoor' | 'tech' | 'art', newValue: number) => {
-      const others = {
-        outdoor: category !== 'outdoor' ? outdoor : null,
-        tech: category !== 'tech' ? tech : null,
-        art: category !== 'art' ? art : null,
-      };
-
-      // Calculate total of other weights
-      const totalOthers = Object.values(others).reduce(
-        (sum, val) => (sum || 0) + (val || 0),
-        0,
-      );
-
-      if (!totalOthers) {
-        return;
-      }
-
-      // Adjust other weights proportionally
-      if (totalOthers > 0) {
-        const ratio = (1 - newValue) / totalOthers;
-        if (category !== 'outdoor') setOutdoor((prev) => prev * ratio);
-        if (category !== 'tech') setTech((prev) => prev * ratio);
-        if (category !== 'art') setArt((prev) => prev * ratio);
-      }
-
-      // Set the new value for the changed category
-      if (category === 'outdoor') setOutdoor(newValue);
-      if (category === 'tech') setTech(newValue);
-      if (category === 'art') setArt(newValue);
-    },
-    [outdoor, tech, art],
-  );
+  const {
+    loading,
+    weights: { outdoor, tech, art },
+    preferenceTexts,
+    setWeight,
+    setPreferenceText,
+    topEvents,
+    themeUpdate,
+  } = useVectorStore();
 
   if (loading) {
     return <div>Loading demo data...</div>;
@@ -157,7 +29,7 @@ export function PreferenceDemo() {
           <textarea
             id="outdoor-text"
             value={preferenceTexts.outdoor}
-            onChange={(e) => handleTextChange('outdoor', e.target.value)}
+            onChange={(e) => setPreferenceText('outdoor', e.target.value)}
             className="w-full rounded border bg-background p-2 text-foreground"
             rows={2}
           />
@@ -172,7 +44,7 @@ export function PreferenceDemo() {
             step="0.01"
             value={outdoor}
             onChange={(e) =>
-              handleWeightChange('outdoor', Number.parseFloat(e.target.value))
+              setWeight('outdoor', Number.parseFloat(e.target.value))
             }
             className="w-full"
           />
@@ -185,7 +57,7 @@ export function PreferenceDemo() {
           <textarea
             id="tech-text"
             value={preferenceTexts.tech}
-            onChange={(e) => handleTextChange('tech', e.target.value)}
+            onChange={(e) => setPreferenceText('tech', e.target.value)}
             className="w-full rounded border bg-background p-2 text-foreground"
             rows={2}
           />
@@ -200,7 +72,7 @@ export function PreferenceDemo() {
             step="0.01"
             value={tech}
             onChange={(e) =>
-              handleWeightChange('tech', Number.parseFloat(e.target.value))
+              setWeight('tech', Number.parseFloat(e.target.value))
             }
             className="w-full"
           />
@@ -213,7 +85,7 @@ export function PreferenceDemo() {
           <textarea
             id="art-text"
             value={preferenceTexts.art}
-            onChange={(e) => handleTextChange('art', e.target.value)}
+            onChange={(e) => setPreferenceText('art', e.target.value)}
             className="w-full rounded border bg-background p-2 text-foreground"
             rows={2}
           />
@@ -228,7 +100,7 @@ export function PreferenceDemo() {
             step="0.01"
             value={art}
             onChange={(e) =>
-              handleWeightChange('art', Number.parseFloat(e.target.value))
+              setWeight('art', Number.parseFloat(e.target.value))
             }
             className="w-full"
           />
@@ -241,23 +113,13 @@ export function PreferenceDemo() {
 
       <div style={{ marginTop: '2rem' }}>
         <VectorPlot
-          events={events}
+          events={topEvents}
           outdoor={outdoor}
           tech={tech}
           art={art}
           key={themeUpdate}
         />
       </div>
-
-      <h4>Top Matching Events</h4>
-      <ul>
-        {events.map((evt) => (
-          <li key={evt.id}>
-            <strong>{evt.name}</strong> - {evt.description} (Score:{' '}
-            {evt.score.toFixed(2)})
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

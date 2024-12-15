@@ -6,6 +6,8 @@ tags: ['homelab', 'proxmox']
 authors: ['jack']
 ---
 
+# Choosing Hardware for my Homelab
+
 I'm building a homelab for my personal projects. What's that, you might ask?
 
 Well, it's a collection of compute power, memory, storage, and networking hardware that I'll be able to specially configure for my needs.
@@ -18,7 +20,7 @@ I'm using Proxmox VE for my hypervisor. It's a free and open source project that
 
 I chose Proxmox because it's open source, and has significant community support.
 
-### Why a hypervisor?
+## Why a hypervisor?
 
 I love to dive into new technologies as they emerge. It's definitely a passion of mine. I love to explore the potential unlocked by new technologies, and how they might be applicable to real world problems.
 
@@ -26,7 +28,7 @@ One of the downsides of this approach is that I often times need a different typ
 
 This is where a hypervisor comes in. It allows me to run different operating systems on the same hardware, and to configure the hardware to my needs. I can even use Proxmox to move workloads between physical machines if I need to.
 
-### Choice of hardware
+## Choice of hardware
 
 Proxmox VE supports a wide range of hardware. One of the benefits of using a hypervisor is that the hardware layer is abstracted away from the operating system. This means that I can use a wide range of hardware and assign virtual resources from the underlying pool of devices to run my services with maximum efficiency.
 
@@ -43,7 +45,7 @@ Some important factors to consider when choosing your hardware might include:
 - Pay attention to the number and types of interfaces your hardware has. If you run a multi-node cluster like mine, you will likely want to have a separate interface for the `chronosync` process that's specific to Proxmox VE. This is especially important if you intend to run distributed storage.
 - Make sure your hardware has sufficient SATA/SAS interfaces for storage purposes. You may also need external RAID controllers, or an external non-RAID controller to support a large number of drives.
 
-### Storage
+## Storage
 
 One of the most important considerations when choosing your hardware is storage. This is especially true if your workloads will be data-intensive.
 
@@ -71,7 +73,7 @@ I've chosen to use a series of four 6TB HDDs for my 'slow' pool, and a series of
 
 Ceph estimates that this combination amounts to about 26TB of raw storage for me to use.
 
-### Setting the components up
+## Setting the components up
 
 I won't get into a detailed installation of each of these items, since the documentation for each is quite good and ever changing. But, I wanted to share some tips that helped me get started.
 

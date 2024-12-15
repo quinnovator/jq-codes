@@ -6,6 +6,8 @@ tags: ['homelab', 'kubernetes', 'talos']
 authors: ['jack']
 ---
 
+# Virtualizing Kubernetes on a Hypervisor
+
 Kubernetes is a container orchestration tool that was built at Google. Its purpose is to scale containerized applications across a cluster of machines, and respond to increasing and decreasing loads automatically.
 
 While you'll find Kubernetes heavily relied upon by large and complex software applications, I thoroughly believe that it can also be a very powerful tool for individual devlopers to learn and use.
@@ -16,7 +18,7 @@ Once you've learned how containers work, it will become more clear how a tool li
 
 One of the main reasons that it excites me in particular is that we can develop large systems with different components working together, while avoiding the complexity of managing the underlying infrastructure. It also becomes much easier to deploy, since workloads can be deployed to a cluster in the cloud with relative ease.
 
-### Kubernetes on Proxmox
+## Kubernetes on Proxmox
 
 If you haven't already, I would suggest reading my post on [choosing hardware](/blog/homelab-choosing-hardware) for your homelab.
 
@@ -24,7 +26,7 @@ I'll be creating a virtual cluster with seven nodes using Proxmox. What does thi
 
 Talos is a Linux distribution created for Kubernetes, and allows us to declare the state of a given node with a configuration file. This is a fantastic advantage, because it makes it very simple to add nodes or change node configuration.
 
-### Preparing for Installation
+## Preparing for Installation
 
 You'll want to take care of a few things before getting started.
 
@@ -34,7 +36,7 @@ You'll want to take care of a few things before getting started.
 
 3. Once you've got the ISO downloaded, you'll want to upload the ISO to the pool we identified in the previous step.
 
-### Creating the VMs
+## Creating the VMs
 
 1. Now, we'll want to create a new virtual machine. Make sure it's configured as a Linux guest, and attach the newly downloaded ISO to the VM. Configure it with the number of vCPUs and RAM that you want to allocate to each node. You'll want to have two types of nodes, control plane nodes and worker nodes. Control plane nodes should be allocated at least 2 vCPUs and 4GB of RAM, while worker nodes should be allocated at least 2 vCPUs and 2GB of RAM. Control plane nodes are responsible for scheduling and operation of your cluster. It's good practice to have dedicated worker nodes to avoid your cluster failing to respond to API requests.
 
@@ -52,7 +54,7 @@ You'll want to take care of a few things before getting started.
 
 8. You can now interact with your cluster using `kubectl`.
 
-### Extra considerations
+## Extra considerations
 
 After getting your cluster up and running, you'll want to consider a few things.
 
@@ -62,7 +64,7 @@ After getting your cluster up and running, you'll want to consider a few things.
 
 - If you have a Ceph pool configured for your cluster in Proxmox, you'll want to install a Ceph CSI driver for your cluster. This will allow you to use your Ceph pool as a persistent storage solution for your cluster. Otherwise, check out something like Longhorn or file-based storage solutions for persistence.
 
-### What can I do with this?
+## What can I do with this?
 
 This is a natural question. You've got a cluster, now what?
 
