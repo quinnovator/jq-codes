@@ -1,10 +1,9 @@
 'use client';
 
 import { create } from 'zustand';
-import { initDB, queryEventsByVector } from './db';
-import { getEmbeddingForText } from './embedder';
+import { initDB } from './db';
 import { seedDemoEvents } from './seed';
-import { weightedCombination } from './vector-math';
+import { getTopEventsForPreferences } from './vector-utils';
 
 type DemoEvent = {
   id: string;
@@ -79,10 +78,8 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
 
       set({ events, initialized: true, loading: false });
 
-      // Initial top events calculation
-      const vectors = await updatePreferenceVectors(state.preferenceTexts);
-      const combined = weightedCombination(state.weights, vectors);
-      const top = await queryEventsByVector(combined, 5);
+      // Initial top events
+      const top = await getTopEventsForPreferences(get().weights, get().preferenceTexts, 5);
       set({ topEvents: top });
     } catch (error) {
       console.error('Failed to initialize vector store:', error);
@@ -117,7 +114,7 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
     });
 
     // Update top events after weight change
-    updateTopEvents();
+    updateTopEventsHelper();
   },
 
   setPreferenceText: (category, value) => {
@@ -126,26 +123,16 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
     }));
 
     // Update top events after preference change
-    updateTopEvents();
+    updateTopEventsHelper();
   },
 
   updateTheme: () => set((state) => ({ themeUpdate: state.themeUpdate + 1 })),
 }));
-// Helper functions
-async function updatePreferenceVectors(preferenceTexts: PreferenceTexts) {
-  const vectors: Record<string, number[]> = {};
-  for (const [key, text] of Object.entries(preferenceTexts)) {
-    vectors[key] = await getEmbeddingForText(text);
-  }
-  return vectors;
-}
 
-async function updateTopEvents() {
+async function updateTopEventsHelper() {
   const store = useVectorStore.getState();
   if (!store.initialized) return;
 
-  const vectors = await updatePreferenceVectors(store.preferenceTexts);
-  const combined = weightedCombination(store.weights, vectors);
-  const top = await queryEventsByVector(combined, 5);
+  const top = await getTopEventsForPreferences(store.weights, store.preferenceTexts, 5);
   useVectorStore.setState({ topEvents: top });
 }

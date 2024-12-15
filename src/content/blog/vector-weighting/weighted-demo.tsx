@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { queryEventsByVector } from './db';
-import { seedDemoEvents } from './seed';
+import { getTopEventsForPreferences } from './vector-utils';
 
 type Event = {
   id: string;
@@ -46,6 +45,12 @@ const weightSchemes: WeightScheme[] = [
   },
 ];
 
+const DEFAULT_PREFERENCES = {
+  outdoor: 'I love outdoor adventures and nature activities.',
+  tech: "I'm interested in technology conferences, hackathons, and workshops.",
+  art: 'I enjoy visiting art exhibitions, galleries, and cultural events.',
+};
+
 export function WeightedDemo() {
   const [selectedScheme, setSelectedScheme] = useState<WeightScheme>(
     weightSchemes[0],
@@ -58,30 +63,14 @@ export function WeightedDemo() {
   });
   const [isCustom, setIsCustom] = useState(false);
 
-  useEffect(
-    function initializeEvents() {
-      async function loadEvents() {
-        await updateResults(selectedScheme.weights);
-      }
-      loadEvents();
-    },
-    [selectedScheme.weights],
-  );
+  useEffect(() => {
+    updateResults(selectedScheme.weights);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedScheme.weights]);
 
   async function updateResults(weights: Record<string, number>) {
-    // Create weighted query vector
-    const weightedQuery = new Array(3)
-      .fill(0)
-      .map((_, i) =>
-        Object.entries(preferenceVectors).reduce(
-          (sum, [key, vec]) =>
-            sum + vec[i] * weights[key as keyof typeof weights],
-          0,
-        ),
-      );
-
-    const matchedEvents = await queryEventsByVector(weightedQuery);
-    setResults(matchedEvents);
+    const topEvents = await getTopEventsForPreferences(weights, DEFAULT_PREFERENCES, 5);
+    setResults(topEvents);
   }
 
   function handleSchemeChange(scheme: WeightScheme) {

@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { queryEventsByVector } from './db';
-import { getEmbeddingForText } from './embedder';
+import { getEventsByQuery } from './vector-utils';
 
 type Event = {
   id: string;
@@ -22,11 +21,7 @@ export function BasicQueryDemo() {
     setIsSearching(true);
 
     try {
-      // Get query embedding
-      const queryVector = await getEmbeddingForText(query);
-
-      // Query events using the embedded vector
-      const matchedEvents = await queryEventsByVector(queryVector);
+      const matchedEvents = await getEventsByQuery(query);
       setResults(matchedEvents);
     } catch (error) {
       console.error('Search failed:', error);
