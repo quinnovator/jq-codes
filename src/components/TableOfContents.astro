@@ -9,7 +9,7 @@ export interface Heading {
   subheadings: Heading[];
 }
 
-const { headings } = Astro.props;
+const { headings, class: className } = Astro.props;
 const toc = buildToc(headings);
 
 function buildToc(headings: Heading[]): Heading[] {
@@ -36,7 +36,10 @@ function buildToc(headings: Heading[]): Heading[] {
 }
 ---
 
-<details open class="group block rounded-xl border p-4 xl:hidden">
+<details
+  open
+  class={`group block rounded-xl border p-4 xl:hidden ${className}`}
+>
   <summary
     class="flex cursor-pointer items-center justify-between text-xl font-semibold"
   >
