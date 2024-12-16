@@ -1,28 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useVectorStore } from './vector-store';
 
 export function EventTable() {
   const store = useVectorStore();
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!store.initialized && !store.loading) {
-      store.initialize().catch((err) => {
-        console.error('Failed to initialize events:', err);
-        setError('Failed to load events. Please try refreshing the page.');
-      });
-    }
-  }, [store.initialized, store.loading, store.initialize]);
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
-
-  if (store.loading) {
-    return <div>Loading events...</div>;
-  }
 
   if (store.events.length === 0) {
     return <div>No events found. Please try refreshing the page.</div>;

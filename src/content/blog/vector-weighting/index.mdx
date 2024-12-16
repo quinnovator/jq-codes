@@ -8,6 +8,7 @@ authors: ['jack']
 
 import { EventTable } from './event-table';
 import { UnifiedSearchDemo } from './unified-search-demo';
+import { InitializeStore } from './initialize-store';
 
 # Understanding Vector-Based Recommendation Systems
 
@@ -41,6 +42,8 @@ similarity(a, b) = \frac{a \cdot b}{||a|| \cdot ||b||}
 ```
 
 ## Demonstrating Vector Similarity
+
+<InitializeStore client:only="react" />
 
 I'll share a basic demonstration of how vector similarity works by embedding a list of events into a vector space. We'll use these embeddings to find similar events to a given query.
 

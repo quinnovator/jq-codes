@@ -26,6 +26,7 @@ export type VectorStore = {
   preferenceVectors: PreferenceVectors | null;
   loading: boolean;
   initialized: boolean;
+  error: string | null;
   initialize: () => Promise<void>;
 };
 
@@ -34,13 +35,14 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
   preferenceVectors: null,
   loading: false,
   initialized: false,
+  error: null,
 
   initialize: async () => {
     const state = get();
     if (state.initialized) return;
 
     try {
-      set({ loading: true });
+      set({ loading: true, error: null });
 
       await seedDemoEvents();
 
@@ -68,14 +70,26 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
       };
 
       if (events.length === 0) {
-        console.error('No events found after initialization');
-        return;
+        throw new Error('No events found after initialization');
       }
 
-      set({ events, preferenceVectors, initialized: true, loading: false });
+      set({
+        events,
+        preferenceVectors,
+        initialized: true,
+        loading: false,
+        error: null,
+      });
     } catch (error) {
       console.error('Failed to initialize vector store:', error);
-      set({ loading: false });
+      set({
+        loading: false,
+        initialized: true,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to initialize vector store',
+      });
     }
   },
 }));
