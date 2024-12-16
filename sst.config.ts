@@ -25,7 +25,7 @@ export default $config({
         },
       }),
       server: {
-        install: ['@resvg/resvg-js'],
+        install: ['@resvg/resvg-js', 'onnxruntime-node'],
       },
     });
   },

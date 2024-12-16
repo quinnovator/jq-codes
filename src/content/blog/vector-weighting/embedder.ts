@@ -13,6 +13,10 @@ async function loadEmbedder() {
   if (!embedder) {
     env.allowLocalModels = false;
 
+    if (env.backends.onnx?.wasm) {
+      env.backends.onnx.wasm.numThreads = 1;
+    }
+
     embedder = await pipeline('feature-extraction', undefined, {
       device: 'wasm',
       dtype: 'int8',
