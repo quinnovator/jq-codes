@@ -111,12 +111,15 @@ export function UnifiedSearchDemo() {
   return (
     <div className="space-y-6">
       <form onSubmit={handleSearch} className="space-y-4">
-        <div>
+        <div className="space-y-2">
+          <label htmlFor="query" className="text-md font-medium">
+            Search for events
+          </label>
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Describe what kind of event you're looking for..."
+            placeholder="Ex: Casual afternoon with friends"
             className="w-full rounded border p-2 dark:bg-gray-800"
           />
         </div>
@@ -156,12 +159,14 @@ export function UnifiedSearchDemo() {
       {(basicResults.length > 0 || weightedResults.length > 0) && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <div>
-            <h3 className="mb-3 text-lg font-semibold">Basic Search Results</h3>
+            <h3 className="mb-3 text-lg font-semibold">
+              Basic Results (Query Only)
+            </h3>
             <ResultsList events={basicResults} />
           </div>
           <div>
             <h3 className="mb-3 text-lg font-semibold">
-              Preference-Weighted Results
+              Weighted Results (Query + Preferences)
             </h3>
             <ResultsList events={weightedResults} />
           </div>

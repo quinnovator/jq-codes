@@ -28,7 +28,7 @@ export const NAV_LINKS: Link[] = [
 ];
 
 export const SOCIAL_LINKS: Link[] = [
-  { href: 'https://github.com/quinnovator', label: 'GitHub' },
+  { href: 'https://github.com/quinnovator/jq-codes', label: 'GitHub' },
   { href: 'https://twitter.com/quinnovator_', label: 'Twitter' },
   { href: 'jack@jq.codes', label: 'Email' },
   { href: '/rss.xml', label: 'RSS' },

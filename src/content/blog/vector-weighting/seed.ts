@@ -18,7 +18,7 @@ export async function seedDemoEvents() {
       id: '3',
       name: 'Local Art Fair',
       description:
-        'An exhibition of local artists and galleries. Artsy atmosphere, not crowded.',
+        'An exhibition of local artists and galleries. Artsy atmosphere.',
     },
     {
       id: '4',
@@ -39,8 +39,7 @@ export async function seedDemoEvents() {
     {
       id: '7',
       name: 'Noisy Night Club',
-      description:
-        'A loud and crowded nightlife experience with music and dancing.',
+      description: 'A loud and crowded club with music and dancing.',
     },
     {
       id: '8',
