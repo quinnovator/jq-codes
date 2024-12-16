@@ -17,9 +17,9 @@ async function loadEmbedder() {
       env.backends.onnx.wasm.numThreads = 1;
     }
 
-    embedder = await pipeline('feature-extraction', undefined, {
-      device: 'wasm',
+    embedder = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
       dtype: 'int8',
+      device: 'wasm',
     });
   }
   return embedder;
@@ -32,6 +32,8 @@ export async function getEmbeddingForText(text: string): Promise<number[]> {
     pooling: 'mean',
     normalize: true,
   });
+
+  console.log(rawEmbeddings);
 
   const embeddings = Array.from(rawEmbeddings.data);
 

@@ -5,7 +5,7 @@ import { initDB } from './db';
 import { getEmbeddingForText } from './embedder';
 import { seedDemoEvents } from './seed';
 
-type DemoEvent = {
+export type DemoEvent = {
   id: string;
   name: string;
   description: string;
@@ -13,7 +13,7 @@ type DemoEvent = {
   score: number;
 };
 
-type PreferenceVectors = {
+export type PreferenceVectors = {
   outdoors: number[];
   artsy: number[];
   techFocused: number[];
@@ -21,7 +21,7 @@ type PreferenceVectors = {
   crowded: number[];
 };
 
-type VectorStore = {
+export type VectorStore = {
   events: DemoEvent[];
   preferenceVectors: PreferenceVectors | null;
   loading: boolean;

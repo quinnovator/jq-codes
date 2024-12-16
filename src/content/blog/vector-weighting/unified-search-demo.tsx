@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useVectorStore } from './vector-store';
 import { getEventsByQuery, getEventsByWeightedQuery } from './vector-utils';
 
 type Event = {
@@ -77,16 +78,17 @@ export function UnifiedSearchDemo() {
   const [weightedResults, setWeightedResults] = useState<Event[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [preferences, setPreferences] = useState(defaultPreferences);
+  const { preferenceVectors } = useVectorStore();
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim() || !preferenceVectors) return;
 
     setIsSearching(true);
     try {
       const [basic, weighted] = await Promise.all([
         getEventsByQuery(query),
-        getEventsByWeightedQuery(query, preferences),
+        getEventsByWeightedQuery(query, preferences, preferenceVectors),
       ]);
       setBasicResults(basic);
       setWeightedResults(weighted);
@@ -142,7 +144,7 @@ export function UnifiedSearchDemo() {
 
         <button
           type="submit"
-          disabled={isSearching}
+          disabled={isSearching || !preferenceVectors}
           className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
         >
           {isSearching ? 'Searching...' : 'Search Events'}

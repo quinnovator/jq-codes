@@ -1,6 +1,6 @@
 import { queryEventsByVector } from './db';
 import { getEmbeddingForText } from './embedder';
-import { useVectorStore } from './vector-store';
+import type { PreferenceVectors } from './vector-store';
 
 // Query events by a standard query (no weighting)
 export async function getEventsByQuery(query: string, limit = 5) {
@@ -45,18 +45,12 @@ export async function getEventsByWeightedQuery(
     noisy: boolean;
     crowded: boolean;
   },
+  preferenceVectors: PreferenceVectors,
   limit = 5,
 ) {
   // First get base events by vector similarity
   const queryVector = await getEmbeddingForText(query);
   const baseEvents = await queryEventsByVector(queryVector, 100);
-
-  // Get preference vectors from store
-  const store = useVectorStore.getState();
-  if (!store.preferenceVectors) {
-    throw new Error('Preference vectors not initialized');
-  }
-  const preferenceVectors = store.preferenceVectors;
 
   // Apply preference-based scoring adjustments using vector similarity
   const adjusted = baseEvents.map((evt) => {
