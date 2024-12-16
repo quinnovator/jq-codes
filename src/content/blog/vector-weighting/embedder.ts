@@ -1,14 +1,22 @@
+'use client';
+
 import {
   type FeatureExtractionPipeline,
   type Tensor,
+  env,
   pipeline,
-} from '@xenova/transformers';
+} from '@huggingface/transformers';
 
 let embedder: FeatureExtractionPipeline;
 
 async function loadEmbedder() {
   if (!embedder) {
-    embedder = await pipeline('feature-extraction');
+    env.allowLocalModels = false;
+
+    embedder = await pipeline('feature-extraction', undefined, {
+      device: 'wasm',
+      dtype: 'int8',
+    });
   }
   return embedder;
 }

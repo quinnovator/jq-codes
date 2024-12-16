@@ -48,24 +48,24 @@ export const useVectorStore = create<VectorStore>((set, get) => ({
       const docs = await collection.find().exec();
       const events = docs.map((doc) => doc.toJSON());
 
-      // Initialize preference vectors in parallel
-      const preferenceVectors = await Promise.all([
-        getEmbeddingForText('outdoor nature hiking trails park'),
-        getEmbeddingForText('art museum gallery creative artistic'),
-        getEmbeddingForText('technology innovation tech startup digital'),
-        getEmbeddingForText(
+      // Initialize preference vectors
+      const preferenceVectors = {
+        outdoors: await getEmbeddingForText(
+          'outdoor nature hiking trails park',
+        ),
+        artsy: await getEmbeddingForText(
+          'art museum gallery creative artistic',
+        ),
+        techFocused: await getEmbeddingForText(
+          'technology innovation tech startup digital',
+        ),
+        noisy: await getEmbeddingForText(
           'loud noisy bustling sound music not-family-friendly',
         ),
-        getEmbeddingForText(
+        crowded: await getEmbeddingForText(
           'crowded busy packed full people not-family-friendly',
         ),
-      ]).then(([outdoors, artsy, techFocused, noisy, crowded]) => ({
-        outdoors,
-        artsy,
-        techFocused,
-        noisy,
-        crowded,
-      }));
+      };
 
       if (events.length === 0) {
         console.error('No events found after initialization');
