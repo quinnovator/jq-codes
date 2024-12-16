@@ -4,6 +4,7 @@ import Container from '@/components/Container.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import { SITE } from '@/consts';
 import Layout from '@/layouts/Layout.astro';
+import { Image } from 'astro:assets';
 import { type CollectionEntry, getCollection } from 'astro:content';
 
 const projects = await getCollection('projects');
@@ -17,11 +18,18 @@ type Project = CollectionEntry<'projects'>;
 
     <section>
       <div class="min-w-full">
+        <Image
+          src={'https://gravatar.com/avatar/76aabea48aed11ed7e5bbfcce9ca9a61.webp?size=256'}
+          alt="Avatar of Jack"
+          width={200}
+          height={200}
+          class="mb-4 size-32 rounded-md object-cover"
+        />
         <h1 class="mb-4 text-3xl font-bold">Some more about me</h1>
         <p class="prose prose-neutral mb-8 dark:prose-invert">
-          My name is Jack. I live in the NYC area, love music, and am a chronic
-          nerd. I'm a software engineer specializing in full stack development
-          using React, Node, and Go.
+          My name is Jack. I live in the NYC area, I enjoy music, and I've
+          always been a nerd. I'm a senior software engineer specializing in
+          full stack development using React, Node, and agentic AI.
 
           <br />
           <br />
