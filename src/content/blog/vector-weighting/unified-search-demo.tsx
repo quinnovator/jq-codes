@@ -86,10 +86,12 @@ export function UnifiedSearchDemo() {
 
     setIsSearching(true);
     try {
-      const [basic, weighted] = await Promise.all([
-        getEventsByQuery(query),
-        getEventsByWeightedQuery(query, preferences, preferenceVectors),
-      ]);
+      const basic = await getEventsByQuery(query);
+      const weighted = await getEventsByWeightedQuery(
+        query,
+        preferences,
+        preferenceVectors,
+      );
       setBasicResults(basic);
       setWeightedResults(weighted);
     } catch (error) {

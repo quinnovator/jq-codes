@@ -1,7 +1,6 @@
 ---
 import Container from '@/components/Container.astro';
 import Link from '@/components/Link.astro';
-import MobileMenu from '@/components/ui/mobile-menu';
 import ModeToggle from '@/components/ui/mode-toggle.astro';
 import { NAV_LINKS, SITE } from '@/consts';
 import { Image } from 'astro:assets';
@@ -22,7 +21,7 @@ import logo from '../assets/logo.svg';
         {SITE.TITLE}
       </Link>
       <div class="flex items-center gap-2 md:gap-4">
-        <nav class="hidden items-center gap-4 text-sm sm:gap-6 md:flex">
+        <nav class="flex items-center gap-4 text-sm sm:gap-6">
           {
             NAV_LINKS.map((item) => (
               <Link
@@ -34,7 +33,6 @@ import logo from '../assets/logo.svg';
             ))
           }
         </nav>
-        <MobileMenu transition:persist />
         <ModeToggle transition:persist />
       </div>
     </div>

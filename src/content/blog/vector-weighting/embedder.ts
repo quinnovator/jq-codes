@@ -1,41 +1,49 @@
 'use client';
 
-import {
-  type FeatureExtractionPipeline,
-  type Tensor,
-  env,
-  pipeline,
-} from '@huggingface/transformers';
+let worker: Worker | null = null;
+let nextRequestId = 1;
+const pendingRequests = new Map<
+  number,
+  { resolve: (value: number[]) => void; reject: (error: Error) => void }
+>();
 
-let embedder: FeatureExtractionPipeline;
-
-async function loadEmbedder() {
-  if (!embedder) {
-    env.allowLocalModels = false;
-
-    if (env.backends.onnx?.wasm) {
-      env.backends.onnx.wasm.numThreads = 1;
-    }
-
-    embedder = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-      dtype: 'int8',
-      device: 'wasm',
+function initWorker() {
+  if (!worker && typeof window !== 'undefined') {
+    worker = new Worker(new URL('./vector-worker.ts', import.meta.url), {
+      type: 'module',
     });
+
+    worker.onmessage = (event) => {
+      const { type, id, embeddings, error } = event.data;
+      const request = pendingRequests.get(id);
+
+      if (request) {
+        if (type === 'EMBEDDING_RESULT') {
+          request.resolve(embeddings);
+        } else if (type === 'EMBEDDING_ERROR') {
+          request.reject(new Error(error));
+        }
+        pendingRequests.delete(id);
+      }
+    };
   }
-  return embedder;
 }
 
 export async function getEmbeddingForText(text: string): Promise<number[]> {
-  const model = await loadEmbedder();
+  initWorker();
 
-  const rawEmbeddings: Tensor = await model(text, {
-    pooling: 'mean',
-    normalize: true,
+  if (!worker) {
+    throw new Error('Service worker could not be initialized');
+  }
+
+  return new Promise((resolve, reject) => {
+    const requestId = nextRequestId++;
+    pendingRequests.set(requestId, { resolve, reject });
+
+    worker?.postMessage({
+      type: 'GET_EMBEDDING',
+      id: requestId,
+      text,
+    });
   });
-
-  console.log(rawEmbeddings);
-
-  const embeddings = Array.from(rawEmbeddings.data);
-
-  return embeddings;
 }
