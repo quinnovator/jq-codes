@@ -1,9 +1,22 @@
 import { GITHUB_ORG, GITHUB_REPO } from './constants';
 
-const github = new aws.iam.OpenIdConnectProvider('GithubProvider', {
+let githubProvider: aws.iam.OpenIdConnectProvider;
+
+const existingProvider = await aws.iam.getOpenIdConnectProvider({
   url: 'https://token.actions.githubusercontent.com',
-  clientIdLists: ['sts.amazonaws.com'],
 });
+
+if (!existingProvider) {
+  githubProvider = new aws.iam.OpenIdConnectProvider('GithubProvider', {
+    url: 'https://token.actions.githubusercontent.com',
+    clientIdLists: ['sts.amazonaws.com'],
+  });
+} else {
+  githubProvider = aws.iam.OpenIdConnectProvider.get(
+    'GithubProvider',
+    existingProvider.id,
+  );
+}
 
 const githubRole = new aws.iam.Role('GithubRole', {
   name: [$app.name, $app.stage, 'github'].join('-'),
@@ -13,11 +26,11 @@ const githubRole = new aws.iam.Role('GithubRole', {
       {
         Effect: 'Allow',
         Principal: {
-          Federated: github.arn,
+          Federated: githubProvider.arn,
         },
         Action: 'sts:AssumeRoleWithWebIdentity',
         Condition: {
-          StringLike: github.url.apply((url) => ({
+          StringLike: githubProvider.url.apply((url) => ({
             [`${url}:sub`]: `repo:${GITHUB_ORG}/${GITHUB_REPO}:*`,
           })),
         },

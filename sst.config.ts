@@ -1,6 +1,6 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
-const APPLICATION_KEY = 'jq-codes-web';
+const APPLICATION_KEY = 'jq-codes';
 const PROD_STAGE = 'main';
 const EXTERNAL_URL = 'jq.codes';
 
@@ -10,9 +10,6 @@ export default $config({
       name: APPLICATION_KEY,
       removal: input?.stage === PROD_STAGE ? 'retain' : 'remove',
       home: 'aws',
-      providers: {
-        '@pulumiverse/vercel': '1.14.3',
-      },
     };
   },
   async run() {
@@ -24,9 +21,6 @@ export default $config({
         domain: {
           name: EXTERNAL_URL,
           redirects: [`www.${EXTERNAL_URL}`],
-          dns: sst.vercel.dns({
-            domain: EXTERNAL_URL,
-          }),
         },
       }),
       server: {
