@@ -1,6 +1,7 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro';
 import Container from '@/components/Container.astro';
+import Link from '@/components/Link.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import { SITE } from '@/consts';
 import Layout from '@/layouts/Layout.astro';
@@ -25,35 +26,64 @@ type Project = CollectionEntry<'projects'>;
           height={200}
           class="mb-4 size-32 rounded-md object-cover"
         />
-        <h1 class="mb-4 text-3xl font-bold">Some more about me</h1>
-        <p class="prose prose-neutral mb-8 dark:prose-invert">
-          My name is Jack. I live in the NYC area, I enjoy music, and I've
-          always been a nerd. I'm a senior software engineer specializing in
-          full stack development using React, Node, and agentic AI.
-
-          <br />
-          <br />
-
-          I offer software consulting services for small to medium sized
-          businesses on a case-by-case basis. I am currently not accepting new
-          work.
-        </p>
-
-        <p class="prose prose-neutral mb-8 dark:prose-invert">
-          I spend most of my free time working on software projects, but when
-          I'm not doing that you can probably find me watching the Phillies, or
-          enjoying time with my fiance and our dog.
-        </p>
-
-        <h2 class="mb-4 text-2xl font-semibold">Project showcase</h2>
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {
-            projects.map((project: Project) => (
-              <ProjectCard project={project} />
-            ))
-          }
+        <h1 class="mb-4 text-3xl font-bold">About Me</h1>
+        <div class="prose prose-neutral mb-8 dark:prose-invert">
+          <p>
+            I'm based in the NYC area and have been passionate about technology
+            since childhood. My journey in software development began with
+            robotics and Java programming, which laid the foundation for my
+            technical skill set.
+          </p>
+          <p>
+            I hold a Computer Science degree from Penn State University, where I
+            was selected for the Happy Valley LaunchBox accelerator to develop <Link
+              href="https://www.psu.edu/news/academics/story/loancrunch-app-helps-students-manage-loan-debt"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="underline">Loancrunch</Link
+            >, my first startup.
+          </p>
+          <p>
+            At Capital One, I progressed from a full-stack developer focused on
+            cloud resiliency to a Lead Software Engineer on the Model Training
+            Infrastructure team. I was recognized in the Circle of Excellence
+            for contributions to the Model Platform and earned three promotions
+            in as many years.
+          </p>
+          <p>
+            My contract work includes developing MyVoice, an ed-tech platform
+            used by school districts nationwide, and creating custom Shopify
+            integrations for e-commerce businesses with significant social media
+            presence.
+          </p>
+          <p>
+            Throughout my career, I've built and scaled products that have
+            generated millions of impressions across education, fintech,
+            e-commerce, and enterprise software industries. My focus on
+            user-centered design and scalable architecture has consistently
+            delivered measurable business impact.
+          </p>
+          <p>
+            Currently, I'm the co-founder of <Link
+              href="https://www.newmemories.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="underline">New Memories</Link
+            >, an AI-first product studio building solutions to enhance human
+            experiences. I also serve as the Head of Engineering.
+          </p>
+          <p>
+            When I'm not working on software projects, you'll find me watching
+            the Phillies or spending quality time with my wife and our Bernese
+            Mountain Dog.
+          </p>
         </div>
       </div>
     </section>
+
+    <!-- <h2 class="mb-4 text-2xl font-semibold">Project showcase</h2>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {projects.map((project: Project) => <ProjectCard project={project} />)}
+    </div> -->
   </Container>
 </Layout>
