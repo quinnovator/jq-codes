@@ -1,0 +1,61 @@
+name: pr-checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  install_dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            **/pnpm-lock.yaml
+            **/package-lock.json
+            **/yarn.lock
+          key: ${{ runner.os }}-dep-${{ hashFiles('**/pnpm-lock.yaml', '**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-dep-
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+  check_and_build:
+    needs: [install_dependencies]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            **/pnpm-lock.yaml
+            **/package-lock.json
+            **/yarn.lock
+          key: ${{ runner.os }}-dep-${{ hashFiles('**/pnpm-lock.yaml', '**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-dep-
+
+      - name: Install dependencies if needed
+        run: |
+          npm install -g pnpm
+          test -d node_modules || pnpm install
+
+      - name: Astro check
+        run: pnpm run check --if-present
+
+      - name: Build
+        run: pnpm run build

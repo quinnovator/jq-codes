@@ -10,10 +10,15 @@ export default $config({
       name: APPLICATION_KEY,
       removal: input?.stage === PROD_STAGE ? 'retain' : 'remove',
       home: 'aws',
-      providers: { '@pulumiverse/vercel': '1.14.3' },
+      providers: {
+        '@pulumiverse/vercel': '1.14.3',
+      },
     };
   },
   async run() {
+    if ($app.stage === PROD_STAGE) {
+      await import('./infra/github-iam');
+    }
     new sst.aws.Astro('JQCodesWeb', {
       ...($app.stage === PROD_STAGE && {
         domain: {

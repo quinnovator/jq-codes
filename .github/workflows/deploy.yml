@@ -1,0 +1,78 @@
+name: deploy-app
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.ref }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  install_dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            **/pnpm-lock.yaml
+            **/package-lock.json
+            **/yarn.lock
+          key: ${{ runner.os }}-dep-${{ hashFiles('**/pnpm-lock.yaml', '**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-dep-
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+  deploy:
+    needs: [install_dependencies]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            **/pnpm-lock.yaml
+            **/package-lock.json
+            **/yarn.lock
+          key: ${{ runner.os }}-dep-${{ hashFiles('**/pnpm-lock.yaml', '**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-dep-
+
+      - name: Install dependencies if needed
+        run: |
+          npm install -g pnpm
+          test -d node_modules || pnpm install
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            .sst
+          key: ${{ runner.os }}-sst
+
+      - name: Configure AWS credentials (Production)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::194722422465:role/jq-codes-web-main-github
+          aws-region: us-east-1
+
+      - name: Deploy
+        run: |
+          npx sst install
+          npx sst deploy --stage main --verbose
