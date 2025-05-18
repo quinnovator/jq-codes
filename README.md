@@ -34,4 +34,3 @@ Additional Commands
     •	pnpm run build - Build for production
     •	pnpm run preview - Preview production build
     •	pnpm run prettier - Format all files with Prettier
-```
