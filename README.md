@@ -7,10 +7,12 @@ It is based off of the Astro-Erudite template from @jktrn.
 ## Development
 
 - `pnpm dev` or `sst dev` if AWS credentials are setup.
+- Requires **Node.js v18** or newer.
 
 ## Deployment
 
 ### Local Deployment
+
 Before GitHub Actions can deploy automatically, you must first create the AWS IAM role and OIDC provider.
 This is done automatically by SST, but you must run at least one local deploy from your machine:
 
